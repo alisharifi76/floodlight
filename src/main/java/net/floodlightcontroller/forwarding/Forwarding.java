@@ -202,11 +202,12 @@ public class Forwarding extends ForwardingBase implements IFloodlightModule, IOF
         Ethernet eth = IFloodlightProviderService.bcStore.get(cntx, IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
 
         OFPort inPort = OFMessageUtils.getInPort(pi);
+//        log.info(inPort.toString());
         NodePortTuple npt = new NodePortTuple(sw.getId(), inPort);
-
         if (decision != null) {
             if (log.isTraceEnabled()) {
                 log.trace("Forwarding decision={} was made for PacketIn={}", decision.getRoutingAction().toString(), pi);
+
             }
 
             switch(decision.getRoutingAction()) {

@@ -95,9 +95,9 @@ implements IFloodlightModule, ILearningSwitchService, IOFMessageListener, IContr
 	// set this flag to true if you want to see the completion messages and
 	// have the switch flushed
 	protected final boolean flushAtCompletion = false;
-	
+
 	/**
-	 * @param floodlightProvider the floodlightProvider to set
+	 * @param floodlightProviderService the floodlightProvider to set
 	 */
 	public void setFloodlightProvider(IFloodlightProviderService floodlightProviderService) {
 		this.floodlightProviderService = floodlightProviderService;
@@ -488,6 +488,8 @@ implements IFloodlightModule, ILearningSwitchService, IOFMessageListener, IContr
 
 	@Override
 	public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
+		if (sw.getId().equals(DatapathId.of("05")))
+			log.info("hello learning");
 		switch (msg.getType()) {
 		case PACKET_IN:
 			return this.processPacketInMessage(sw, (OFPacketIn) msg, cntx);
@@ -550,6 +552,7 @@ implements IFloodlightModule, ILearningSwitchService, IOFMessageListener, IContr
 
 	@Override
 	public void startUp(FloodlightModuleContext context) {
+
 		// paag: register the IControllerCompletionListener
 		floodlightProviderService.addCompletionListener(this);
 		floodlightProviderService.addOFMessageListener(OFType.PACKET_IN, this);

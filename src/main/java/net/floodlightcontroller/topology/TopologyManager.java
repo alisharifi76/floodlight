@@ -231,7 +231,6 @@ ITopologyManagerBackend, ILinkDiscoveryListener, IOFMessageListener {
 
     @Override
     public Map<DatapathId, Set<Link>> getAllLinks() {
-
         Map<DatapathId, Set<Link>> dpidLinks = new HashMap<DatapathId, Set<Link>>();
         TopologyInstance ti = getCurrentInstance();
         Set<DatapathId> switches = ti.getSwitches();
