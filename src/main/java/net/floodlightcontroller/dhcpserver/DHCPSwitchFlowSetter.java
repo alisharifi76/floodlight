@@ -4,17 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import net.floodlightcontroller.packet.IPv4;
 import org.projectfloodlight.openflow.protocol.OFFlowAdd;
 import org.projectfloodlight.openflow.protocol.OFPortDesc;
 import org.projectfloodlight.openflow.protocol.action.OFAction;
 import org.projectfloodlight.openflow.protocol.action.OFActionOutput;
 import org.projectfloodlight.openflow.protocol.match.Match;
 import org.projectfloodlight.openflow.protocol.match.MatchField;
-import org.projectfloodlight.openflow.types.DatapathId;
-import org.projectfloodlight.openflow.types.EthType;
-import org.projectfloodlight.openflow.types.IpProtocol;
-import org.projectfloodlight.openflow.types.OFBufferId;
-import org.projectfloodlight.openflow.types.OFPort;
+import org.projectfloodlight.openflow.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +86,7 @@ public class DHCPSwitchFlowSetter implements IFloodlightModule, IOFSwitchListene
 		for (OFPortDesc port : sw.getPorts()) {
 			match.setExact(MatchField.IN_PORT, port.getPortNo());
 			match.setExact(MatchField.ETH_TYPE, EthType.IPv4);
+//			match.setExact(MatchField.IPV4_SRC, IPv4Address.of("127.0.0.1"));
 			match.setExact(MatchField.IP_PROTO, IpProtocol.UDP);
 			match.setExact(MatchField.UDP_SRC, UDP.DHCP_CLIENT_PORT);
 			action.setMaxLen(0xffFFffFF);

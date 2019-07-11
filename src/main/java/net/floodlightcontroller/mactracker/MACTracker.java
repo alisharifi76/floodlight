@@ -17,6 +17,7 @@ import org.projectfloodlight.openflow.protocol.OFType;
 import org.projectfloodlight.openflow.types.IPv4Address;
 import org.projectfloodlight.openflow.types.IPv6Address;
 import org.projectfloodlight.openflow.types.MacAddress;
+import net.floodlightcontroller.flowcache.*;
 
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IOFMessageListener;
@@ -25,8 +26,13 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.routing.IRoutingService;
+
+
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
+import net.floodlightcontroller.accesscontrollist.ACLRule;
+
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 
@@ -35,6 +41,9 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import net.floodlightcontroller.packet.Ethernet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static jdk.internal.net.http.common.Utils.stringOf;
+
 
 public class MACTracker implements IOFMessageListener, IFloodlightModule {
 
@@ -46,6 +55,9 @@ public class MACTracker implements IOFMessageListener, IFloodlightModule {
     private int cnt = 0;
     protected IDeviceService deviceManagerService;
     protected ILinkDiscoveryService iLinkDiscoveryService;
+    protected IRoutingService iRoutingService;
+    protected ACLRule rule;
+
     @Override
     public String getName() {
         return MACTracker.class.getSimpleName();
@@ -95,6 +107,8 @@ public class MACTracker implements IOFMessageListener, IFloodlightModule {
         topologyService = context.getServiceImpl(ITopologyService.class);
         deviceManagerService = context.getServiceImpl(IDeviceService.class);
         iLinkDiscoveryService = context.getServiceImpl(ILinkDiscoveryService.class);
+        iRoutingService = context.getServiceImpl(IRoutingService.class);
+        rule = new ACLRule();
     }
 
     @Override
@@ -102,11 +116,13 @@ public class MACTracker implements IOFMessageListener, IFloodlightModule {
         iStatisticsService.collectStatistics(true);
         floodlightProvider.addOFMessageListener(OFType.PACKET_IN, this);
         floodlightProvider.addOFMessageListener(OFType.HELLO, this);
+
     }
 
     @Override
-    public net.floodlightcontroller.core.IListener.Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
+    public Command receive(IOFSwitch sw, OFMessage msg, FloodlightContext cntx) {
         Collection<? extends IDevice> allDevices = deviceManagerService.getAllDevices();
+
         if(cnt == 0) {
 //            logger.info(String.valueOf(iLinkDiscoveryService.getLinks().keySet().toArray().length));
             for(Link ll : iLinkDiscoveryService.getLinks().keySet()) {
@@ -114,6 +130,7 @@ public class MACTracker implements IOFMessageListener, IFloodlightModule {
             }
             cnt++;
         }
+//        logger.info(String.valueOf(iRoutingService.getMaxPathsToCompute()));
 //        logger.info(sw.getId().toString());
 //        logger.info(sw.getAttributes().toString());
         for (IDevice d : allDevices) {

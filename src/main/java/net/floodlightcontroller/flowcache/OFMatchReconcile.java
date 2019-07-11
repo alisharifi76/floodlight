@@ -19,6 +19,11 @@ package net.floodlightcontroller.flowcache;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.util.OFMatchWithSwDpid;
 
+import org.projectfloodlight.openflow.protocol.OFMatchType;
+import org.projectfloodlight.openflow.protocol.OFMatchV1;
+import org.projectfloodlight.openflow.protocol.OFMatchV2;
+import org.projectfloodlight.openflow.protocol.OFMatchV3;
+import org.projectfloodlight.openflow.protocol.ver11.OFMatchTypeSerializerVer11;
 import org.projectfloodlight.openflow.types.OFPort;
 
 /**

@@ -199,6 +199,7 @@ public class Forwarding extends ForwardingBase implements IFloodlightModule, IOF
 
     @Override
     public Command processPacketInMessage(IOFSwitch sw, OFPacketIn pi, IRoutingDecision decision, FloodlightContext cntx) {
+//        log.info("process " + pi.toString());
         Ethernet eth = IFloodlightProviderService.bcStore.get(cntx, IFloodlightProviderService.CONTEXT_PI_PAYLOAD);
 
         OFPort inPort = OFMessageUtils.getInPort(pi);
@@ -217,6 +218,7 @@ public class Forwarding extends ForwardingBase implements IFloodlightModule, IOF
 
                 case FORWARD_OR_FLOOD:
                 case FORWARD:
+
                     doL2ForwardFlow(sw, pi, decision, cntx, false);
                     return Command.CONTINUE;
 
@@ -312,6 +314,7 @@ public class Forwarding extends ForwardingBase implements IFloodlightModule, IOF
      */
     protected void doL3Routing(Ethernet eth, IOFSwitch sw, OFPacketIn pi, IRoutingDecision decision,
                              FloodlightContext cntx, @Nonnull VirtualGatewayInstance gatewayInstance, OFPort inPort) {
+
 
         MacAddress gatewayMac = gatewayInstance.getGatewayMac();
 
